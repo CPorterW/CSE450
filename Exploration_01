@@ -1,0 +1,1334 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "LB9TN5GKEyhw"
+      },
+      "source": [
+        "# Data Exploration 01\n",
+        "\n",
+        "A consumer watchdog group wants to see if Netflix has more movies for adults or children.\n",
+        "\n",
+        "Using a dataset containing metadata for all of the movies Netflix had available on their platform in 2019, we'll use the MPAA movie rating system to determine if they are correct.\n",
+        "\n",
+        "## MPAA Movie Ratings:\n",
+        "* G: All ages admitted.\n",
+        "* PG: Some material may not be suitable for children.\n",
+        "* PG-13: Some material may be inappropriate for children under 13.\n",
+        "* R: Under 17 requires accompanying parent or adult guardian\n",
+        "* NC-17: No One 17 and Under Admitted\n",
+        "\n",
+        "Most people would consider G and PG as ratings suitable for children. However, not everyone would agree that a PG-13 movie is necssarily a children's movie. It is up to you to decide how to handle this."
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "agqlq8RKFbry"
+      },
+      "source": [
+        "## Part 1: Import Pandas\n",
+        "\n",
+        "The `pandas library` is a python library used for data analysis and manipulation. It will provide the core functionality for most of what you do in the data exploration and preprocessing stages of most machine learning projects.\n",
+        "\n",
+        "Please see [this Getting Started Guide](https://pandas.pydata.org/docs/getting_started/intro_tutorials/01_table_oriented.html) for information on the conventional way to import Pandas into your project, as well as other helpful tips for common Pandas tasks.\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "id": "14b9y6LKEvEm",
+        "vscode": {
+          "languageId": "python"
+        }
+      },
+      "outputs": [],
+      "source": [
+        "# Part 1: Enter the code below to import Pandas according to the\n",
+        "# conventional method.\n",
+        "import pandas as pd"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "q-O80D5JH9yA"
+      },
+      "source": [
+        "## Part 2: Load the data\n",
+        "\n",
+        "The dataset for this exploration is stored at the following url:\n",
+        "\n",
+        "[https://raw.githubusercontent.com/byui-cse/cse450-course/master/data/netflix_titles.csv](https://raw.githubusercontent.com/byui-cse/cse450-course/master/data/netflix_titles.csv)\n",
+        "\n",
+        "There are lots of ways to load data into your workspace. The easiest way in this case is to [ask Pandas to do it for you](https://pandas.pydata.org/docs/getting_started/intro_tutorials/02_read_write.html).\n",
+        "\n",
+        "### Initial Data Analysis\n",
+        "Once you've loaded the data, it's a good idea to poke around a little bit to find out what you're dealing with.\n",
+        "\n",
+        "Some questions you might ask include:\n",
+        "\n",
+        "* What does the data look like?\n",
+        "* What kind of data is in each column?\n",
+        "* Do any of the columns have missing values?"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 2,
+      "metadata": {
+        "id": "AMKxXySGJVnC",
+        "vscode": {
+          "languageId": "python"
+        }
+      },
+      "outputs": [],
+      "source": [
+        "# Part 2: Load the dataset into a Pandas dataframe.\n",
+        "flix = pd.read_csv(\"https://raw.githubusercontent.com/byui-cse/cse450-course/master/data/netflix_titles.csv\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "id": "1TFtbTIVAYJ-",
+        "vscode": {
+          "languageId": "python"
+        },
+        "outputId": "a6fae936-cdf2-4c08-9bf2-81858a93c5d1",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 230
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "    show_id     type                                    title  \\\n",
+              "0  81145628    Movie  Norm of the North: King Sized Adventure   \n",
+              "1  80117401    Movie               Jandino: Whatever it Takes   \n",
+              "2  70234439  TV Show                       Transformers Prime   \n",
+              "\n",
+              "                   director  \\\n",
+              "0  Richard Finn, Tim Maltby   \n",
+              "1                       NaN   \n",
+              "2                       NaN   \n",
+              "\n",
+              "                                                cast  \\\n",
+              "0  Alan Marriott, Andrew Toth, Brian Dobson, Cole...   \n",
+              "1                                   Jandino Asporaat   \n",
+              "2  Peter Cullen, Sumalee Montano, Frank Welker, J...   \n",
+              "\n",
+              "                                    country         date_added  release_year  \\\n",
+              "0  United States, India, South Korea, China  September 9, 2019          2019   \n",
+              "1                            United Kingdom  September 9, 2016          2016   \n",
+              "2                             United States  September 8, 2018          2013   \n",
+              "\n",
+              "     rating  duration                           listed_in  \\\n",
+              "0     TV-PG    90 min  Children & Family Movies, Comedies   \n",
+              "1     TV-MA    94 min                     Stand-Up Comedy   \n",
+              "2  TV-Y7-FV  1 Season                            Kids' TV   \n",
+              "\n",
+              "                                         description  \n",
+              "0  Before planning an awesome wedding for his gra...  \n",
+              "1  Jandino Asporaat riffs on the challenges of ra...  \n",
+              "2  With the help of three human allies, the Autob...  "
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-3d4634df-a88b-4dde-b021-f0d8e08265d6\" class=\"colab-df-container\">\n",
+              "    <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>show_id</th>\n",
+              "      <th>type</th>\n",
+              "      <th>title</th>\n",
+              "      <th>director</th>\n",
+              "      <th>cast</th>\n",
+              "      <th>country</th>\n",
+              "      <th>date_added</th>\n",
+              "      <th>release_year</th>\n",
+              "      <th>rating</th>\n",
+              "      <th>duration</th>\n",
+              "      <th>listed_in</th>\n",
+              "      <th>description</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>81145628</td>\n",
+              "      <td>Movie</td>\n",
+              "      <td>Norm of the North: King Sized Adventure</td>\n",
+              "      <td>Richard Finn, Tim Maltby</td>\n",
+              "      <td>Alan Marriott, Andrew Toth, Brian Dobson, Cole...</td>\n",
+              "      <td>United States, India, South Korea, China</td>\n",
+              "      <td>September 9, 2019</td>\n",
+              "      <td>2019</td>\n",
+              "      <td>TV-PG</td>\n",
+              "      <td>90 min</td>\n",
+              "      <td>Children &amp; Family Movies, Comedies</td>\n",
+              "      <td>Before planning an awesome wedding for his gra...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>80117401</td>\n",
+              "      <td>Movie</td>\n",
+              "      <td>Jandino: Whatever it Takes</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>Jandino Asporaat</td>\n",
+              "      <td>United Kingdom</td>\n",
+              "      <td>September 9, 2016</td>\n",
+              "      <td>2016</td>\n",
+              "      <td>TV-MA</td>\n",
+              "      <td>94 min</td>\n",
+              "      <td>Stand-Up Comedy</td>\n",
+              "      <td>Jandino Asporaat riffs on the challenges of ra...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>70234439</td>\n",
+              "      <td>TV Show</td>\n",
+              "      <td>Transformers Prime</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>Peter Cullen, Sumalee Montano, Frank Welker, J...</td>\n",
+              "      <td>United States</td>\n",
+              "      <td>September 8, 2018</td>\n",
+              "      <td>2013</td>\n",
+              "      <td>TV-Y7-FV</td>\n",
+              "      <td>1 Season</td>\n",
+              "      <td>Kids' TV</td>\n",
+              "      <td>With the help of three human allies, the Autob...</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "    <div class=\"colab-df-buttons\">\n",
+              "\n",
+              "  <div class=\"colab-df-container\">\n",
+              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-3d4634df-a88b-4dde-b021-f0d8e08265d6')\"\n",
+              "            title=\"Convert this dataframe to an interactive table.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
+              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "\n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-buttons div {\n",
+              "      margin-bottom: 4px;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "    <script>\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#df-3d4634df-a88b-4dde-b021-f0d8e08265d6 button.colab-df-convert');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      async function convertToInteractive(key) {\n",
+              "        const element = document.querySelector('#df-3d4634df-a88b-4dde-b021-f0d8e08265d6');\n",
+              "        const dataTable =\n",
+              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                    [key], {});\n",
+              "        if (!dataTable) return;\n",
+              "\n",
+              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "          + ' to learn more about interactive tables.';\n",
+              "        element.innerHTML = '';\n",
+              "        dataTable['output_type'] = 'display_data';\n",
+              "        await google.colab.output.renderOutput(dataTable, element);\n",
+              "        const docLink = document.createElement('div');\n",
+              "        docLink.innerHTML = docLinkHtml;\n",
+              "        element.appendChild(docLink);\n",
+              "      }\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "\n",
+              "    <div id=\"df-57a889ea-2150-4b36-9c5e-9c809e9d3d8f\">\n",
+              "      <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-57a889ea-2150-4b36-9c5e-9c809e9d3d8f')\"\n",
+              "                title=\"Suggest charts\"\n",
+              "                style=\"display:none;\">\n",
+              "\n",
+              "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "     width=\"24px\">\n",
+              "    <g>\n",
+              "        <path d=\"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z\"/>\n",
+              "    </g>\n",
+              "</svg>\n",
+              "      </button>\n",
+              "\n",
+              "<style>\n",
+              "  .colab-df-quickchart {\n",
+              "      --bg-color: #E8F0FE;\n",
+              "      --fill-color: #1967D2;\n",
+              "      --hover-bg-color: #E2EBFA;\n",
+              "      --hover-fill-color: #174EA6;\n",
+              "      --disabled-fill-color: #AAA;\n",
+              "      --disabled-bg-color: #DDD;\n",
+              "  }\n",
+              "\n",
+              "  [theme=dark] .colab-df-quickchart {\n",
+              "      --bg-color: #3B4455;\n",
+              "      --fill-color: #D2E3FC;\n",
+              "      --hover-bg-color: #434B5C;\n",
+              "      --hover-fill-color: #FFFFFF;\n",
+              "      --disabled-bg-color: #3B4455;\n",
+              "      --disabled-fill-color: #666;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart {\n",
+              "    background-color: var(--bg-color);\n",
+              "    border: none;\n",
+              "    border-radius: 50%;\n",
+              "    cursor: pointer;\n",
+              "    display: none;\n",
+              "    fill: var(--fill-color);\n",
+              "    height: 32px;\n",
+              "    padding: 0;\n",
+              "    width: 32px;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart:hover {\n",
+              "    background-color: var(--hover-bg-color);\n",
+              "    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "    fill: var(--button-hover-fill-color);\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart-complete:disabled,\n",
+              "  .colab-df-quickchart-complete:disabled:hover {\n",
+              "    background-color: var(--disabled-bg-color);\n",
+              "    fill: var(--disabled-fill-color);\n",
+              "    box-shadow: none;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-spinner {\n",
+              "    border: 2px solid var(--fill-color);\n",
+              "    border-color: transparent;\n",
+              "    border-bottom-color: var(--fill-color);\n",
+              "    animation:\n",
+              "      spin 1s steps(1) infinite;\n",
+              "  }\n",
+              "\n",
+              "  @keyframes spin {\n",
+              "    0% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "      border-left-color: var(--fill-color);\n",
+              "    }\n",
+              "    20% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    30% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    40% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    60% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    80% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "    90% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "  }\n",
+              "</style>\n",
+              "\n",
+              "      <script>\n",
+              "        async function quickchart(key) {\n",
+              "          const quickchartButtonEl =\n",
+              "            document.querySelector('#' + key + ' button');\n",
+              "          quickchartButtonEl.disabled = true;  // To prevent multiple clicks.\n",
+              "          quickchartButtonEl.classList.add('colab-df-spinner');\n",
+              "          try {\n",
+              "            const charts = await google.colab.kernel.invokeFunction(\n",
+              "                'suggestCharts', [key], {});\n",
+              "          } catch (error) {\n",
+              "            console.error('Error during call to suggestCharts:', error);\n",
+              "          }\n",
+              "          quickchartButtonEl.classList.remove('colab-df-spinner');\n",
+              "          quickchartButtonEl.classList.add('colab-df-quickchart-complete');\n",
+              "        }\n",
+              "        (() => {\n",
+              "          let quickchartButtonEl =\n",
+              "            document.querySelector('#df-57a889ea-2150-4b36-9c5e-9c809e9d3d8f button');\n",
+              "          quickchartButtonEl.style.display =\n",
+              "            google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "        })();\n",
+              "      </script>\n",
+              "    </div>\n",
+              "\n",
+              "    </div>\n",
+              "  </div>\n"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "dataframe",
+              "variable_name": "flix",
+              "summary": "{\n  \"name\": \"flix\",\n  \"rows\": 6234,\n  \"fields\": [\n    {\n      \"column\": \"show_id\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 10942964,\n        \"min\": 247747,\n        \"max\": 81235729,\n        \"num_unique_values\": 6234,\n        \"samples\": [\n          81025317,\n          80184422,\n          80232914\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"type\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 2,\n        \"samples\": [\n          \"TV Show\",\n          \"Movie\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"title\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 6172,\n        \"samples\": [\n          \"Hulk Vs.\",\n          \"Khan: No. 1 Crime Hunter\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"director\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 3301,\n        \"samples\": [\n          \"Jacob LaMendola\",\n          \"Marita Grabiak\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"cast\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 5469,\n        \"samples\": [\n          \"Mick Rock\",\n          \"Dakore Akande, Ireti Doyle, Nse Ikpe-Etim, Omoni Oboli\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"country\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 554,\n        \"samples\": [\n          \"Switzerland\",\n          \"Argentina\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"date_added\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 1524,\n        \"samples\": [\n          \"February 24, 2016\",\n          \"September 14, 2019\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"release_year\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 8,\n        \"min\": 1925,\n        \"max\": 2020,\n        \"num_unique_values\": 72,\n        \"samples\": [\n          2014,\n          1944\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"rating\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 14,\n        \"samples\": [\n          \"TV-G\",\n          \"G\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"duration\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 201,\n        \"samples\": [\n          \"151 min\",\n          \"79 min\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"listed_in\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 461,\n        \"samples\": [\n          \"Action & Adventure, Independent Movies, Sci-Fi & Fantasy\",\n          \"Comedies, Dramas, International Movies\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"description\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 6226,\n        \"samples\": [\n          \"Learning that her father has married a woman her own age, Kanaya leaves home, only to get into an accident that lands her in a haunted hospital.\",\n          \"Born with supernatural strength, Bong-soon fights evil and procures justice while getting tangled in a love triangle with her CEO boss and cop crush.\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
+            }
+          },
+          "metadata": {},
+          "execution_count": 3
+        }
+      ],
+      "source": [
+        "# Then, explore the data by seeing what the first few rows look like.\n",
+        "flix.head(3)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 4,
+      "metadata": {
+        "id": "GcL5zb6kAYc7",
+        "vscode": {
+          "languageId": "python"
+        },
+        "outputId": "c7eb1ae8-e324-4b54-d067-949701fae7ea",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 460
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "show_id          int64\n",
+              "type            object\n",
+              "title           object\n",
+              "director        object\n",
+              "cast            object\n",
+              "country         object\n",
+              "date_added      object\n",
+              "release_year     int64\n",
+              "rating          object\n",
+              "duration        object\n",
+              "listed_in       object\n",
+              "description     object\n",
+              "dtype: object"
+            ],
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>0</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>show_id</th>\n",
+              "      <td>int64</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>type</th>\n",
+              "      <td>object</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>title</th>\n",
+              "      <td>object</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>director</th>\n",
+              "      <td>object</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>cast</th>\n",
+              "      <td>object</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>country</th>\n",
+              "      <td>object</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>date_added</th>\n",
+              "      <td>object</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>release_year</th>\n",
+              "      <td>int64</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>rating</th>\n",
+              "      <td>object</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>duration</th>\n",
+              "      <td>object</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>listed_in</th>\n",
+              "      <td>object</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>description</th>\n",
+              "      <td>object</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div><br><label><b>dtype:</b> object</label>"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 4
+        }
+      ],
+      "source": [
+        "# Next, display a technical summary of the data to determine the data types of each column, and which columns have missing data.\n",
+        "flix.dtypes\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "CqdAa4EfJ9T0"
+      },
+      "source": [
+        "## Part 3: Filter the Data\n",
+        "\n",
+        "Since we're just interested in movies, we'll need to [filter out anything](https://pandas.pydata.org/docs/getting_started/intro_tutorials/03_subset_data.html) that isn't a movie for our analysis. The `type` feature contains this information.\n",
+        "\n",
+        "Once we have the subset, we should see how many rows it contains. There are a [variety of ways to get the length of a data frame](https://stackoverflow.com/a/38025280/28106)."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 5,
+      "metadata": {
+        "id": "i8wdC-qpPjqF",
+        "vscode": {
+          "languageId": "python"
+        },
+        "outputId": "7915b2f8-79b7-4ef4-edb0-b54afa77d1af",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "4265"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 5
+        }
+      ],
+      "source": [
+        "# Use pandas's filtering abilitites to select the subset of data\n",
+        "# that represents movies, then calculate how many rows are in the filtered data.\n",
+        "movies = flix[flix[\"type\"] == \"Movie\"]\n",
+        "movies.shape[0]"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "sxWEVnHyVV8c"
+      },
+      "source": [
+        "### MPAA Ratings\n",
+        "Now that we have only movies, let's get a [quick count of the values being used](https://pandas.pydata.org/docs/getting_started/intro_tutorials/06_calculate_statistics.html)  in the `rating` feature."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 6,
+      "metadata": {
+        "id": "bH4pNyeVVx0R",
+        "vscode": {
+          "languageId": "python"
+        },
+        "outputId": "1920363a-767d-42b2-edad-48b4592a7805",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 554
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "rating\n",
+              "TV-MA       1348\n",
+              "TV-14       1038\n",
+              "R            506\n",
+              "TV-PG        432\n",
+              "PG-13        286\n",
+              "NR           202\n",
+              "PG           183\n",
+              "TV-G          80\n",
+              "TV-Y7         69\n",
+              "TV-Y          41\n",
+              "G             36\n",
+              "TV-Y7-FV      27\n",
+              "UR             7\n",
+              "NC-17          2\n",
+              "Name: count, dtype: int64"
+            ],
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>count</th>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>rating</th>\n",
+              "      <th></th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>TV-MA</th>\n",
+              "      <td>1348</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>TV-14</th>\n",
+              "      <td>1038</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>R</th>\n",
+              "      <td>506</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>TV-PG</th>\n",
+              "      <td>432</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>PG-13</th>\n",
+              "      <td>286</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>NR</th>\n",
+              "      <td>202</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>PG</th>\n",
+              "      <td>183</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>TV-G</th>\n",
+              "      <td>80</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>TV-Y7</th>\n",
+              "      <td>69</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>TV-Y</th>\n",
+              "      <td>41</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>G</th>\n",
+              "      <td>36</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>TV-Y7-FV</th>\n",
+              "      <td>27</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>UR</th>\n",
+              "      <td>7</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>NC-17</th>\n",
+              "      <td>2</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div><br><label><b>dtype:</b> int64</label>"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 6
+        }
+      ],
+      "source": [
+        "# Determine the number of records for each value of the \"rating\" feature.\n",
+        "# Remember to count the values in your subset only, not in the original dataframe.\n",
+        "ratings = movies[\"rating\"]\n",
+        "ratings.value_counts()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "81bBg3tbV_5s"
+      },
+      "source": [
+        "### More Filtering\n",
+        "\n",
+        "There are apparently some \"made for TV\" movies in the list that don't fit the\n",
+        "MPAA rating scheme.\n",
+        "\n",
+        "Let's [filter some more](https://pandas.pydata.org/docs/getting_started/intro_tutorials/03_subset_data.html) to just see movies rated with the standard MPAA ratings of G, PG, PG-13, R, and NC-17."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 7,
+      "metadata": {
+        "id": "kQmlZqO5Wb_N",
+        "vscode": {
+          "languageId": "python"
+        },
+        "outputId": "16671d4b-8c7b-4084-b474-fc1282dabeca",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 272
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "rating\n",
+              "R        506\n",
+              "PG-13    286\n",
+              "PG       183\n",
+              "G         36\n",
+              "NC-17      2\n",
+              "Name: count, dtype: int64"
+            ],
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>count</th>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>rating</th>\n",
+              "      <th></th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>R</th>\n",
+              "      <td>506</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>PG-13</th>\n",
+              "      <td>286</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>PG</th>\n",
+              "      <td>183</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>G</th>\n",
+              "      <td>36</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>NC-17</th>\n",
+              "      <td>2</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div><br><label><b>dtype:</b> int64</label>"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 7
+        }
+      ],
+      "source": [
+        "# Filter the list of movies to select a new subset containing only movies with\n",
+        "# a standard MPAA rating. Calculate how many rows are in this new set, and\n",
+        "# then see which ratings appear most often.\n",
+        "mpaaMovies = movies[ratings.isin(['G','PG','PG-13','R','NC-17'])]\n",
+        "mpaaMovies.shape\n",
+        "mpaaMovies[\"rating\"].value_counts()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "cl30h29pWp26"
+      },
+      "source": [
+        "## Part 4: Visualization\n",
+        "Now that we have explored and preprocessed our data, let's create a visualization to summarize our findings.\n",
+        "\n",
+        "### Exploration vs Presentation\n",
+        "Broadly speaking, there are two types of visualizations:\n",
+        "* Barebones visualizations you might use to get a quick, visual understanding of the data while you're trying to decide how it all fits together.\n",
+        "* Presentation-quality visualizations that you would include in a report or presentation for management or other stakeholders.\n",
+        "\n",
+        "### Visualization Tools\n",
+        "There are many different visualization tools availble. In the sections below,\n",
+        "we'll explore the three most common. Each of these libraries has strengths and weaknesses.\n",
+        "\n",
+        "It is probably a good idea for you to become familiar with each one, and then become proficient at whichever one you like the best."
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "ebhKz6g9DmRE"
+      },
+      "source": [
+        "### Altair\n",
+        "The Altair visualization library provides a large variety of very easy to use statistical charting tools.\n",
+        "\n",
+        "Altair uses a declarative language to build up charts piece by piece.\n",
+        "\n",
+        "Assume we have a pandas dataframe called `employees`, with three columns: `name`, `job`, `salary`.\n",
+        "\n",
+        "    # Make a box plot style categorical plot showing the distribution of salaries for each job:\n",
+        "    alt.Chart(employees).mark_boxplot().encode(\n",
+        "        x='job',\n",
+        "        y='salary'\n",
+        "    )\n",
+        "\n",
+        "    # Make a box plot style categorical plot, and customize the results\n",
+        "    alt.Chart(employees).mark_boxplot().encode(\n",
+        "        alt.X('job', title='Job title'),\n",
+        "        alt.Y('salary', title='Annual salary in thousands of $USD')\n",
+        "    ).properties(\n",
+        "      title='Salaries by Job Title'\n",
+        "    )"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "kOVsR0WCIm-L"
+      },
+      "source": [
+        "Like with Pandas, there is a [conventional way to import Altair](https://altair-viz.github.io/getting_started/starting.html#the-chart-object) into your projects."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 24,
+      "metadata": {
+        "id": "mYmVEExwD9O9",
+        "vscode": {
+          "languageId": "python"
+        }
+      },
+      "outputs": [],
+      "source": [
+        "# Import the Altair library the conventional way.\n",
+        "import altair as alt"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "IAw61g-CD-Je"
+      },
+      "source": [
+        "Let's create a barchart showing the count of each movie rating by using Altair's aggregation capabilities.\n",
+        "\n",
+        "In [this example](https://altair-viz.github.io/getting_started/starting.html#data-transformation-aggregation), we see the x axis being set to a feature called `a`, and the y axis set to the `average()` of a feature called `b`.\n",
+        "\n",
+        "In our case, we want the x axis to be set to `rating` and the y axis to be the `count()` of `rating`."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 25,
+      "metadata": {
+        "id": "lixpX9B-EEQS",
+        "vscode": {
+          "languageId": "python"
+        },
+        "outputId": "e2c09e12-b2ae-4770-8aab-003ecb85e6fc",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 404
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/html": [
+              "\n",
+              "<style>\n",
+              "  #altair-viz-c42ff35f0947410a998db6095a31d026.vega-embed {\n",
+              "    width: 100%;\n",
+              "    display: flex;\n",
+              "  }\n",
+              "\n",
+              "  #altair-viz-c42ff35f0947410a998db6095a31d026.vega-embed details,\n",
+              "  #altair-viz-c42ff35f0947410a998db6095a31d026.vega-embed details summary {\n",
+              "    position: relative;\n",
+              "  }\n",
+              "</style>\n",
+              "<div id=\"altair-viz-c42ff35f0947410a998db6095a31d026\"></div>\n",
+              "<script type=\"text/javascript\">\n",
+              "  var VEGA_DEBUG = (typeof VEGA_DEBUG == \"undefined\") ? {} : VEGA_DEBUG;\n",
+              "  (function(spec, embedOpt){\n",
+              "    let outputDiv = document.currentScript.previousElementSibling;\n",
+              "    if (outputDiv.id !== \"altair-viz-c42ff35f0947410a998db6095a31d026\") {\n",
+              "      outputDiv = document.getElementById(\"altair-viz-c42ff35f0947410a998db6095a31d026\");\n",
+              "    }\n",
+              "\n",
+              "    const paths = {\n",
+              "      \"vega\": \"https://cdn.jsdelivr.net/npm/vega@5?noext\",\n",
+              "      \"vega-lib\": \"https://cdn.jsdelivr.net/npm/vega-lib?noext\",\n",
+              "      \"vega-lite\": \"https://cdn.jsdelivr.net/npm/vega-lite@5.20.1?noext\",\n",
+              "      \"vega-embed\": \"https://cdn.jsdelivr.net/npm/vega-embed@6?noext\",\n",
+              "    };\n",
+              "\n",
+              "    function maybeLoadScript(lib, version) {\n",
+              "      var key = `${lib.replace(\"-\", \"\")}_version`;\n",
+              "      return (VEGA_DEBUG[key] == version) ?\n",
+              "        Promise.resolve(paths[lib]) :\n",
+              "        new Promise(function(resolve, reject) {\n",
+              "          var s = document.createElement('script');\n",
+              "          document.getElementsByTagName(\"head\")[0].appendChild(s);\n",
+              "          s.async = true;\n",
+              "          s.onload = () => {\n",
+              "            VEGA_DEBUG[key] = version;\n",
+              "            return resolve(paths[lib]);\n",
+              "          };\n",
+              "          s.onerror = () => reject(`Error loading script: ${paths[lib]}`);\n",
+              "          s.src = paths[lib];\n",
+              "        });\n",
+              "    }\n",
+              "\n",
+              "    function showError(err) {\n",
+              "      outputDiv.innerHTML = `<div class=\"error\" style=\"color:red;\">${err}</div>`;\n",
+              "      throw err;\n",
+              "    }\n",
+              "\n",
+              "    function displayChart(vegaEmbed) {\n",
+              "      vegaEmbed(outputDiv, spec, embedOpt)\n",
+              "        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));\n",
+              "    }\n",
+              "\n",
+              "    if(typeof define === \"function\" && define.amd) {\n",
+              "      requirejs.config({paths});\n",
+              "      let deps = [\"vega-embed\"];\n",
+              "      require(deps, displayChart, err => showError(`Error loading script: ${err.message}`));\n",
+              "    } else {\n",
+              "      maybeLoadScript(\"vega\", \"5\")\n",
+              "        .then(() => maybeLoadScript(\"vega-lite\", \"5.20.1\"))\n",
+              "        .then(() => maybeLoadScript(\"vega-embed\", \"6\"))\n",
+              "        .catch(showError)\n",
+              "        .then(() => displayChart(vegaEmbed));\n",
+              "    }\n",
+              "  })({\"config\": {\"view\": {\"continuousWidth\": 300, \"continuousHeight\": 300}}, \"data\": {\"name\": \"data-2e4b5df5ac090affec37e92b4d4810f5\"}, \"mark\": {\"type\": \"bar\"}, \"encoding\": {\"tooltip\": [{\"field\": \"Rating\", \"type\": \"nominal\"}, {\"field\": \"Count\", \"type\": \"quantitative\"}], \"x\": {\"field\": \"Rating\", \"title\": \"MPAA Rating\", \"type\": \"nominal\"}, \"y\": {\"field\": \"Count\", \"title\": \"Number of Movies\", \"type\": \"quantitative\"}}, \"title\": \"Number of Movies by MPAA Rating\", \"width\": 600, \"$schema\": \"https://vega.github.io/schema/vega-lite/v5.20.1.json\", \"datasets\": {\"data-2e4b5df5ac090affec37e92b4d4810f5\": [{\"Rating\": \"R\", \"Count\": 506}, {\"Rating\": \"PG-13\", \"Count\": 286}, {\"Rating\": \"PG\", \"Count\": 183}, {\"Rating\": \"G\", \"Count\": 36}, {\"Rating\": \"NC-17\", \"Count\": 2}]}}, {\"mode\": \"vega-lite\"});\n",
+              "</script>"
+            ],
+            "text/plain": [
+              "alt.Chart(...)"
+            ]
+          },
+          "metadata": {}
+        }
+      ],
+      "source": [
+        "# Use Altair to create a bar chart comparing the count of each movie rating\n",
+        "rating_counts = mpaaMovies[\"rating\"].value_counts().reset_index()\n",
+        "rating_counts.columns = ['Rating', 'Count']\n",
+        "\n",
+        "chart = alt.Chart(rating_counts).mark_bar().encode(\n",
+        "    x=alt.X('Rating:N', title='MPAA Rating'),\n",
+        "    y=alt.Y('Count:Q', title='Number of Movies'),\n",
+        "    tooltip=['Rating', 'Count']\n",
+        ").properties(\n",
+        "    title='Number of Movies by MPAA Rating',\n",
+        "    width=600\n",
+        ")\n",
+        "\n",
+        "chart.display()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "z4Uz_X1QDivG"
+      },
+      "source": [
+        "\n",
+        "### Seaborn\n",
+        "While Altair uses a \"declarative\" syntax for building charts piece by piece, the Seaborn library provides a large variety of pre-made charts for common statistical needs.\n",
+        "\n",
+        "These charts are divided into different categories. Each category has a high-level interface you can use for simplicity, and then a specific function for each chart that you can use if you need more control over how the chart looks.\n",
+        "\n",
+        "Seaborn uses matplotlib for its drawing, and the chart-specific functions each return a matplitlib axes object if you need additional customization.\n",
+        "\n",
+        "For example, there are several different types of categorical plots in seaborn: bar plots, box plots, point plots, count plots, swarm plots, etc...\n",
+        "\n",
+        "Each of these plots can be accessed using the `catplot` function.\n",
+        "\n",
+        "Assume we have a pandas dataframe called `employees`, with three columns: `name`, `job`, `salary`.\n",
+        "\n",
+        "    # Make a box plot style categorical plot showing the distribution of salaries for each job:\n",
+        "    sns.catplot(data=employees, x='job', y='salary', kind='box')\n",
+        "\n",
+        "    # Make a swarm plot style categorical plot\n",
+        "    sns.catplot(data=employees, x='job', y='salary', kind='swarm')\n",
+        "\n",
+        "Alternatively, you can use the plot specific functions to give yourself more control over the output by using matplotlib functions:\n",
+        "\n",
+        "    # Make a box plot style categorical plot, and customize the results\n",
+        "    import matplotlib.pyplot as plt\n",
+        "\n",
+        "    plt.figure(figsize=(12, 9))\n",
+        "    ax = sns.boxplot(data=employees, x='job', y='salary')\n",
+        "    ax.set_title(\"Salaries by Job Title\")\n",
+        "    ax.set_ylabel(\"Annual salary in thousands of $USD\")\n",
+        "    ax.set_xlabel(\"Job title\")\n",
+        "    "
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "fW3CV6KTIcxb"
+      },
+      "source": [
+        "Like with Pandas, there is a [conventional way to import Seaborn](https://seaborn.pydata.org/tutorial/relational.html) into your projects.\n",
+        "\n",
+        "Optionally, you may wish to set some default chart aesthetics by [setting the chart style](https://seaborn.pydata.org/tutorial/aesthetics.html)."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 27,
+      "metadata": {
+        "id": "6UZKj1yMXTYg",
+        "vscode": {
+          "languageId": "python"
+        }
+      },
+      "outputs": [],
+      "source": [
+        "# Import the seaborn library the conventional way. Then optionally configure\n",
+        "# the default chart style.\n",
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "sns.set_theme(style=\"darkgrid\")"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "AWlh7ipsXaYM"
+      },
+      "source": [
+        "Since the `rating` column uses categorical data, we need to use Seaborn's [categorical visualizations](https://seaborn.pydata.org/tutorial/categorical.html).\n",
+        "\n",
+        "In particular, we want a \"count plot\" that will display a count of movie ratings.\n",
+        "\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 30,
+      "metadata": {
+        "id": "-T6xRLvAYJIf",
+        "vscode": {
+          "languageId": "python"
+        },
+        "outputId": "3737e322-f4cf-48d5-c1d5-5973b696841e",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 518
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<seaborn.axisgrid.FacetGrid at 0x7e4415840650>"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 30
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<Figure size 512.222x500 with 1 Axes>"
+            ],
+            "image/png": "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yclKS0tTdna2JkyYoNDQUM2ZM0cJCQm69tpr/bBnAADUr4AK/MaNGyVJjzzySJV1a9euVbt27TRgwAAdO3ZMeXl5WrRokWJiYjR//nwlJyd7jZ87d65mzZqlqVOnqqKiQmlpaZo8ebKCgwNqlwEAqBMBVbsPPvjgrMYNGjRIgwYN+s0xLVq00MyZMzVz5szamBoAAOeVgLoGDwAAageBBwDAQAQeAAADEXgAAAxE4AEAMFBAvYseQO2yWi2yWi1nHmgwl8stl8vt72kA9Y7AA4ayWi0KD2/a4H8jndPp0qFDR4k8GhwCDxjKarUoKMiq3Bc3qrTM7u/p+EXb1mG69y+pslotBB4NDoEHDFdaZtee0oP+ngaAetawX7sDAMBQBB4AAAMReAAADETgAQAwEIEHAMBABB4AAAMReAAADETgAQAwEIEHAMBABB4AAAMReAAADETgAQAwEIEHAMBABB4AAAMReAAADETgAQAwEIEHAMBABB4AAAMReAAADETgAQAwEIEHAMBABB4AAAMReAAADETgAQAwEIEHAMBABB4AAAMReAAADETgAQAwEIEHAMBABB4AAAMReAAADETgAQAwEIEHAMBABB4AAAMReAAADETgAQAwEIEHAMBABB4AAAMReAAADETgAQAwEIEHAMBABB4AAAMReAAADETgAQAwEIEHAMBABB4AAAMReAAADETgAQAwEIEHAMBABB4AAAMReAAADETgAQAwEIEHAMBABB4AAAMReAAADETgAQAwUEAF/t///remTp2qG264QZ06ddKAAQOqHbdy5Ur169dPiYmJGjhwoNatW1dlTHl5ubKzs9WtWzclJydrzJgxKisrq+tdAAAgIARU4L/55hutX79eF110keLi4qod8/bbb2vKlCnKyMhQXl6ekpKSNGrUKH3++ede47KysrRx40ZNmzZNjz/+uIqLizVixAhVVFTUw54AAOBfwf6ewKl69+6tvn37SpImTpyoL7/8ssqYefPmqX///srKypIkde/eXTt37lRubq7y8vIkSZs3b9aGDRu0ZMkSpaWlSZJiYmKUmZmpd999V5mZmfWzQwAA+ElAncFbrb89nZKSEu3Zs0cZGRleyzMzM1VYWKjjx49LkgoKCmSz2ZSamuoZExsbq44dO6qgoKD2Jw4AQIAJqMCfSVFRkaSTZ+OniouL04kTJ1RS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XFyc7rnnHnXo0EHHjh3TRx99pAULFujQoUO6//77f/Mx1qxZo5KSEl199dV6+eWXqx1z5MgR/e53v9N9992nCy+8UD/88IMWLlyooUOH6o033lBERESt77s/1cdxb6ieeOIJLVy4UNdcc42mTp2qyMhI/fjjj3r//ff1wAMPKCwsTD179vT3NOvUpk2b9PHHHyslJeW0Yz7//HPdcccdioiI0IgRI3TxxRfr8OHDWr9+vcaPH68OHTro0ksvPe3933jjDUnSVVddpddff73aMffcc48GDx7stSw/P19Lly5Venr6ue9YfXHjvDdv3jx3UlKS17J9+/a5ExIS3FOmTPHTrOpPdftfWlrqTkhIcE+fPt1dVlbmTk5Odg8bNsx9/PjxKvcvKytzv/fee2d8HKfT6flzfHy8e/HixWc1v+LiYnd8fLz7zTffPKvx54v6Ou4N0bp169zx8fHuefPmVbt+y5Yt7q+++qqeZ1V/Kn+2br75ZvfQoUO91s2YMcPdq1cvt9vtdv/888/uq666yt2/f393eXl5le18/fXX7tLS0t98rMq/1yUlJe74+Hj3O++8c1ZzvPXWW92ZmZlnNdZfzHx9B4qKilJERIS+++47f0/FL9q0aaOIiAjt3btXK1as0JEjRzRp0iQ1atSoytjIyEj17dv3jNv09eXQ8PBwSdKJEyd8uv/5pC6Oe0P0zDPPKDIyUnfffXe167t06aJOnTrV86zq3z333KOPPvpIn332WbXr33nnHX3//fe67777qr3Uc+mll6pNmza/+Ri+/L3ev3+/Nm3apOuvv/6c71ufCLyhjhw5Irvdrnbt2vl7Kn5x+PBhHTp0SK1bt9Ynn3yiqKgoXXLJJfX2+C6XSydOnNDevXv18MMP68ILL9Q111xTb4/vL/4+7iaoqKjQZ599pu7duys4uGFfRe3Vq5c6deqk3Nzcatf/61//UlBQkP7whz/U67xWr14tl8ul/v371+vjnisCb5CKigpVVFTou+++0+TJk9WsWTMNHTrU39OqN5X7v3fvXk2aNElOp1P9+vVTWVmZLrzwwtOOr6iokNPprNW5PPjgg7rsssvUp08fbd26Vc8884xatGhRq48RKALpuJvg0KFDOn78eJVj53a7vY6dy+Xy0wzr1913360NGzZo69atVdbt379fERERaty4cb3OafXq1UpOTlZ0dHS9Pu65athPDw1y9OhRde7c2XM7KChICxYsUGxsrB9nVX/+e//DwsI0depUz5uQLBaL1/gDBw6oR48entuXXHKJVq9eLelkgCpZLBYFBQWd83zGjh2roUOH6vvvv9fSpUs1bNgwvfDCC2d8ufB8U5vHHd7++9j94x//0NixYz23/+d//qdB/Orra665RvHx8crNzdXChQt92obb7fZ6Munr32vp5G8p3bZtm6ZMmeLT/esTgTdE48aNtWzZMrndbu3Zs0ezZ8/WhAkT9NZbb6l169b+nl6dq9x/i8Wili1b6sILL/RcW2vdurX+/e9/e4232WxatWqVJCk3N1d79+6VdPLjNn369PGMa9u2rdfHcc5WdHS0oqOj1aVLF6Wnp+vaa6/V4sWLjfsHubaOO34VHh6ukJAQ7du3z2t5jx49PMfudNfmTWSxWDRy5Ejdd999+uqrr7zWRUVFqbCwUL/88otCQ0NPu41PPvnE69XMbt266fnnn/dpPm+99ZaCg4OVmZnp0/3rE4E3hNVqVWJioqSTb8CJiYnRLbfcotzcXE2fPt3Ps6t7p+7/f+vWrZs++ugj7d69W3FxcZKk4OBgz/jw8HBPaFq3bu35R1SSQkJCajy3Jk2aKC4urkrsTFBbxx2/Cg4O1hVXXKHCwkI5nU7PmWZYWJjn2NXGz+X5JCMjQzk5OVqwYIHXq2DdunXTqlWrVFhYqKuvvvq09+/cubPX3+tmzZr5PJe3335bPXr0OC8+8so1eEMlJiaqf//+evXVV/XDDz/4ezp+dcstt6hZs2aaNWvWGd/JHhISosTERM9/CQkJNX78w4cPa8eOHQF/va62nctxh7dhw4Z5vs8CJ59Ijhw5UmvXrtWOHTs8y6+77jpdeOGFeuKJJ3T48OEq99uxY4e+//57NW/e3Ovvta+XLrds2aJvv/1WAwYM8Hlf6hNn8Aa75557PF/GMH78eH9Px28iIyP12GOPady4cfrzn/+swYMHKyYmRr/88ot27typwsJCXXDBBWfczq5du7Rr1y7P7Z07d2rNmjVq0qSJ5xsDc3JyVF5eriuuuEIREREqLS3V888/r+PHj+uvf/1rne1jIKqt494QXX311brzzjs1b948bd++XRkZGWrdurXKy8u1adMm/fDDDzU6Cz0fXX/99crNzdXHH3+stm3bSpJCQ0M1d+5c3XHHHbrpppt0++23e77oZsOGDVqxYoVWrlxZ7Zs9K33xxRcqLS3VgQMHJJ2MuCRFRESoW7duXmPfeustNW7c+Lz5RAyBN1hsbKwyMzP14osv6q677jL2Xdxno2/fvnr11VeVl5en3Nxc/fTTT56vTL3tttuqfEtVdd555x2vr2Z9/fXX9frrr3tdp+/UqZOeffZZvfHGGzp69KiioqJ05ZVX6sknn2xwZ/BS7Rz3hur+++/X73//ey1fvlzTp0/X4cOHFRYWps6dO2vmzJkB/xGt2hYUFKQ777xTkydP9lqelJSk1157TYsWLdLChQv1448/er6q9oknnvjNb7GTTn5V7alfQ/v0009Lqnqd3ul0as2aNerVq9d58+TK4na73f6eBAAAqF1cgwcAwEAEHgAAAxF4AAAMROABADAQgQcAwEAEHgAAAxF4AAAMROABADAQgQdQZ3r37q2JEyf6expAg0TgAdTIZ599ppycHDkcDn9PBcAp+C56ADWyefNmzZ8/X3/6059ks9m81q1Zs0YWi8VPMwMaNs7gAVRx9OjRWtlOSEiIGjVqVCvbAnBuCDzQwOXk5CghIUG7du3S/fffryuvvFJDhgzR9u3bNXHiRPXp00eJiYlKTU3VpEmTdPDgQa/7PvbYY5KkPn36KCEhQQkJCdq7d6+kqtfgX331VSUkJOjTTz/VrFmz1L17dyUlJenee+/1/LrOSi6XSzk5OUpLS9Pll1+u2267Tbt27eK6PnCWeIkegCRp7NixuuiiizRu3Di53W7985//VElJiW688UZFRkbqm2++0YoVK7Rr1y6tWLFCFotF11xzjfbs2aPVq1dr0qRJatmypaSTv0v7t8yYMUM2m02jRo1SaWmpli5dqoceekhz5871jJk9e7YWL16sXr16qWfPntq+fbuGDx+uX375pS4PA2AMAg9AknTppZdq9uzZnts///yz/vd//9drTFJSku677z59+umn6tq1qy699FJ16tRJq1evVt++fdWuXbuzeqzw8HA9/fTTnuvzLpdLzz//vMrLy9WiRQv9+OOPevbZZ9W3b1/l5uZ67jd//nzl5OTUwt4C5uMlegCSpMGDB3vdbty4sefPv/zyiw4cOKDLL79ckvTVV1/V6LFuueUWrzffde3aVU6nU6WlpZKkwsJCVVRUaMiQIV73u/XWW2v0uEBDwhk8AEmqcvZ96NAhzZ8/X/n5+frpp5+81pWXl9fosdq0aeN1u/Ld95Uftfvuu+8kSe3bt/caFx4errCwsBo9NtBQEHgAkqTQ0FCv21lZWdq8ebOGDx+ujh07qmnTpnK5XLrjjjvkdrtr9FhWa/UvHtZ0uwB+ReABVGG321VYWKjRo0dr1KhRnuV79uypMrYuPudeeYb/7bffKjo62rP84MGDstvttf54gIm4Bg+giqCgoGqXL126tMqyJk2aSKr5y/an6tGjh4KDg/Xiiy96LV++fHmtPQZgOs7gAVTRvHlzXXnllVq8eLFOnDihqKgobdy40fP59lN17txZkjRnzhxlZmaqUaNG6tWrl5o2berz4//ud7/T0KFD9fTTT2vkyJHq2bOnduzYoYKCArVs2ZJvxwPOAoEHUK3Zs2fr4Ycf1gsvvCC3263U1FTl5eWpZ8+eXuO6dOmisWPH6qWXXtKHH34ol8ultWvX1ijwkjR+/Hg1btxYK1euVGFhoZKSkrRkyRINGTJEISEhNdo20BBY3LyrBcB5wuFw6Morr1RWVpbuvvtuf08HCGhcgwcQkH7++ecqyyrfA9CtW7f6ng5w3uElegABKT8/X6+99prS09PVtGlTffbZZ1q9erXS0tL0+9//3t/TAwIegQcQkBISEhQUFKTFixfryJEjatWqlYYOHaqsrCx/Tw04L3ANHgAAA3ENHgAAAxF4AAAMROABADAQgQcAwEAEHgAAAxF4AAAMROABADAQgQcAwEAEHgAAA/1/WDbQZJ10PK8AAAAASUVORK5CYII=\n"
+          },
+          "metadata": {}
+        }
+      ],
+      "source": [
+        "# Use seaborn to create a count plot comparing the count of each movie rating\n",
+        "sns.catplot(data=mpaaMovies, x=\"rating\", kind=\"count\")"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "HWUrbz38L_1X"
+      },
+      "source": [
+        "### Pandas built-in plotting\n",
+        "In addition to libraries like Altair and Seaborn, Pandas has some [built in charting functionality](https://pandas.pydata.org/docs/getting_started/intro_tutorials/04_plotting.html).\n",
+        "\n",
+        "While not as sophisticated as some of the other options, it is often good enough for quick visualizations.\n",
+        "\n",
+        "Just like with seaborn's plotting functions, the pandas plotting functions return matplotlib axes objects, which can be further customized.\n",
+        "\n",
+        "Assume we have a pandas dataframe called `employees`, with three columns: `name`, `job`, `salary`.\n",
+        "\n",
+        "    # Make a box plot style categorical plot showing the distribution of salaries for each job:\n",
+        "    employees[ ['job','salary'] ].plot.box()\n",
+        "\n",
+        "    # Make a box plot style categorical plot, and customize the results\n",
+        "    import matplotlib.pyplot as plt\n",
+        "\n",
+        "    plt.figure(figsize=(12, 9))\n",
+        "    ax = employees[ ['job','salary'] ].plot().box()\n",
+        "    ax.set_title(\"Salaries by Job Title\")\n",
+        "    ax.set_ylabel(\"Annual salary in thousands of $USD\")\n",
+        "    ax.set_xlabel(\"Job title\")\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 40,
+      "metadata": {
+        "id": "Y0PW4s0LNjld",
+        "vscode": {
+          "languageId": "python"
+        },
+        "outputId": "6eb4f3c2-e9e2-474e-b390-bf5d9572f382",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 547
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Text(0.5, 0, 'Rating')"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 40
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<Figure size 1200x900 with 0 Axes>"
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<Figure size 640x480 with 1 Axes>"
+            ],
+            "image/png": "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WrZsmeeK2f+Kjo5WTk6O5s+fn2dbdna2JQynpKTkuaqXe5UuP7fQzp07Z3l6T5IuX76sTz/9VHXr1lXlypUt60uUKKEOHTooPj5e69atU3BwsOrUqXPb/d+Kt7e3evbsqZ07d+rQoUOS/v/VnBuPJy0tTWvXrs3z+lKlSt30Fm9BNG/eXGfPntXWrVst665evarVq1fb9X1QfHClCLCzIUOG6LPPPlNycnKe+XJ69OihhQsX6sUXX1RoaKj27t1706sp9uLj46PevXurW7duunDhgpYtW6YaNWpYBqIajUZNmTJFAwcOVMeOHdWtWzf5+fnp7Nmz2r17t8qWLasFCxbY9N6DBg3Spk2bLNMB+Pj46NNPP9WpU6c0Z84cu03WV6dOndv+ZV+yZEmNGTNGL7zwgp566il16NBBFy5c0Pvvvy9/f3/179/fqn3FihUVFhampUuXKj09XTExMbeto2nTpurZs6feeecdHTp0SBERESpZsqSOHz+uzZs368UXX1T79u31ySefaMWKFWrbtq2qV6+u9PR0rV69WmXLlrWE1b9Ts2ZNvfjii/r5559VsWJFrV27VhcuXNDUqVPztO3atas++OAD7d69+7a3//Kjb9++WrZsmRYuXKiZM2dajnHIkCF64oknlJ6erjVr1qhixYp5/lFw3333acWKFZo/f75q1KihChUq5Llqd6d69uyp5cuXa/To0erbt68qV66sDRs2WG7xOuLqFIo2QhFgZzVq1FDnzp31ySef5Nn23HPP6eLFi9qyZYvi4+MVFRWld999t8B/OdzKkCFDdPjwYS1cuFDp6ekKDw/Xyy+/rFKlSlnahIWFadWqVZo/f76WL1+ujIwMVa5cWQ0aNFDPnj1tfu9KlSpp5cqVeuONN7R8+XJdvXpVISEhWrBggVNmnP5f3bp101133aVFixZp+vTpKl26tNq2bavnn3/+prNpx8TE6JtvvlGZMmXUokWLfL3HK6+8otDQUK1cuVIzZ86Uh4eH/P391blzZzVp0kTS9fD0888/Ky4uTufPn1e5cuXUoEEDTZ8+3XI78+/UrFlTEyZM0LRp05ScnKxq1app5syZN/2+uNDQUN177706evRovp86+zt+fn7q1KmTPvvsM/32228KCgrS7NmzNWvWLL3++uuqVKmSevXqpQoVKmj8+PFWr33uuef0+++/6913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TQOtDx8+rK5du1oFolylS5fWo48+qsOHDxe4OAAAAGexKRR5eXkpJeXW3wWVkpIiLy8vm4sCAABwNptCUVhYmN5//339+OOPebb99NNP+uCDDxQeHl7g4gAAAJzFpjFFzz//vJ544gn17t1bDRo0UGBgoCQpOTlZ+/fvV8WKFTVmzBi7FgoAAOBINl0pCggI0Pr169WnTx+lpKQoLi5OcXFxSklJUd++ffXZZ5+pWrVq9q4VAADAYWyep6hixYoaP368xo8fb896AAAAXMKmK0UAAABFDaEIAABAhCIAAABJhCIAAABJhCIAAABJNoSizMxMdevWTStWrHBEPQAAAC5xx6GoVKlSOnXqlAwGgyPqAQAAcAmbbp9FRkZq586d9q4FAADAZWwKRc8++6yOHz+u559/Xnv37tXZs2d16dKlPD8AAACFhU0zWnfo0EGSlJSUpI0bN96y3aFDh2yrCgAAwMlsCkXPPfccY4oAAECRYlMoGj58uL3rAAAAcCm7zFOUlpamnJwce+wKAADAJWwORT///LMGDBighg0bKiwsTN99950k6eLFixo6dKh2795ttyIBAAAczaZQ9MMPP6h37946ceKEOnfuLJPJZNlWoUIFXb58WatWrbJbkQAAAI5mUyiaOXOmatWqpbi4OMXGxubZHhYWpp9++qnAxQEAADiLTaHo559/Vrdu3eTp6XnTp9D8/Px0/vz5AhcHAADgLDaFohIlSljdMvtfZ8+eVenSpW0uCgAAwNlsCkUNGzbUli1bbrotIyND69at04MPPligwgAAAJzJplA0YsQIHThwQIMGDdKOHTskSYcPH9aaNWvUrVs3Xbx4Uc8++6xdCwUAAHAkm68ULVy4UCdOnNDYsWMlSa+99pomTJggk8mkhQsXqk6dOnYtFAAAwJFsmtFaksLDw7VlyxYdPHhQJ06ckNlsVkBAgEJDQ/kKEAAAUOjYHIpy1atXT/Xq1bNHLQAAAC5jcyjKysrS6tWrtX37dp0+fVqS5O/vrxYtWqhHjx7y8vKyW5EAAACOZlMoOnPmjJ5++mklJyercuXKqlGjhiTpv//9r77++mstX75c7733nqpWrWrXYgEAABzFplA0efJk/f7775o1a5bat29vtS0+Pl7jxo3T5MmT9fbbb9ulSAAAAEezKRR9++236t+/f55AJEnR0dE6ePCgli9f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0B1cKerUqdMd7dhgMGj9+vV3XBAAAIAr5DsUlS9fPl/tzp8/r+TkZBkMjpuOHwAAwN7yHYo++OCDv93+559/atGiRVq1apU8PDzUuXPnAhcHAADgLAWe0fr8+fNauHChVq9erezsbHXq1ElDhw5V9erV7VEfAACAU9gcinKvDN0Yhp599lkFBATYsz4AAACnuONQ9Oeff2rhwoVas2aNsrOz1blzZw0dOpQwBAAACrV8h6Jz585ZwlBOTo66dOmiIUOGEIYAAECRkO9Q9PDDDysrK0t169bV4MGDVa1aNaWmpuqXX3655Wvuu+8+uxQJAADgaPkORVevXpUkHTx4UCNHjvzbtmazWQaDQYcOHSpQcQAAAM6S71A0depUR9YBAADgUvkORY8++qgj6wAAAHApvvsMAABAhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJhCIAAABJbhaKTpw4oYkTJ6pLly6qV6+eOnbseNN2a9asUbt27VS/fn117txZ27Zty9MmLS1N48ePV9OmTdW4cWONGDFC586dc/QhAACAQsqtQtGRI0e0fft21ahRQ7Vq1bppm02bNmnChAmKjo7WokWL1KhRIw0bNkz79u2zajdy5Ejt2rVLkyZN0vTp05WcnKyBAwcqOzvbCUcCAAAKmxKuLuBGrVu3Vtu2bSVJ48aN04EDB/K0mT17tjp06KCRI0dKkpo1a6Zff/1V8+bN06JFiyRJP/74o3bu3KnFixerefPmkqTAwEDFxMQoISFBMTExzjkgAABQaLjVlSKj8e/LOXnypI4fP67o6Gir9TExMUpMTFRWVpYkaceOHfL29lZERISlTVBQkOrWrasdO3bYv3AAAFDouVUoup1jx45Jun7V50a1atXStWvXdPLkSUu7wMBAGQwGq3ZBQUGWfQAAANzIrW6f3U5KSookydvb22p97nLu9tTUVJUrVy7P6318fG56S+5OlSjhuCzp4VGocurfKuzH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3nudXV6x0rRpU61YsULdunW75T8QsrOztWLFCoWFhTm5uuKjRYsWGjRokObMmaNVq1apWbNmliunZ8+eVWJios6dO6eBAweqRYsWLq4WktSgQQM1aNBA48ePd3UpDkMoKqKGDRvm6hJwgxdffFEZGRm3bVeuXDn179/f8QUVY4MGDVK3bt00ePBgvfDCC6pVq5bV9mPHjum1117T0aNHbxpcYT+jRo1SkyZNtHTpUm3evFlZWVmSJE9PTzVp0kSvvPIKgchJHn300TxXrm/FaCy6N5kMZrPZ7OoiAMCZtm7dqn/961/KyMiQn5+fqlatKoPBoLNnz+qPP/5Q6dKlNW3aNLVp08bVpRYbOTk5lqfMypcvz21+uAShCECxdP78ea1evVrfffedzp07J0mqUqWKmjZtqscff5zxREAxRCgC3MiOHTs0efJkbd261dWlFGlJSUlauXKlTp06pSpVqqhdu3aKiIhwdVmA29uzZ4/mzJmj999/39WlOARjigA3kpmZqd9//93VZRRpe/futcwkXqFCBV26dElr1qzRxIkT1atXL1eXB7i1ixcvFum51AhFgBMsXbo0X+0OHz7s4EowZ84c1apVSwsWLNDdd9+ty5cv64UXXtCsWbMIRSi28jt7+759+xxbiItx+wxwgjp16shgMCg//7sZDAYdOnTICVUVT+Hh4Zo8ebIeeeQRy7pTp06pbdu22rZtW54JNYHigN9R13GlCHACPz8/tWrVSpMmTfrbdps3b1ZsbKxziiqm/vrrL8uM4rlyg9Bff/1FKEKx5Ovrq5YtW952Opft27fr3//+t5Oqcj5CEeAEDRs21P79+2/b7maTbQKAozVs2FDJycny9/f/23Y3+yLlooRQBDhB+/bttWXLltu2q127tp577jknVFS8Mds7YC0yMlLr16+/bTt/f3917drV8QW5CGOKABQrc+fOvaP2zA4PFB+EIgAAAElF9wtMgELAZDKpTZs2OnLkiKtLAYA8TCaT+vbtq+PHj7u6FKcgFAEuZDabdfr0acsXYQKAOzGbzfruu++Unp7u6lKcglAEAAAgQhEAAIAkBloDLnf69GlVqVJFJUuWdHUpAJDHd999p9DQUJUuXdrVpTgcoQgAAOjw4cPy8fHJM+N7rjNnziglJUUhISFOrsx5uH0GOEF6erpmzpypL7/80rLOZDKpU6dO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\n"
+          },
+          "metadata": {}
+        }
+      ],
+      "source": [
+        "# Use pandas' built in plotting functions to create a count plot comparing the count of each movie rating\n",
+        "# This will be a little trickier than the other libraries, but one hint is that the pandas value_counts() function\n",
+        "# actually returns a dataframe.\n",
+        "import matplotlib.pyplot as plt\n",
+        "\n",
+        "plt.figure(figsize=(12, 9))\n",
+        "df = mpaaMovies[\"rating\"].value_counts().reset_index()\n",
+        "df.columns = ['Rating', 'Count']\n",
+        "df['Rating'] = df['Rating'].astype(str)\n",
+        "\n",
+        "ax = df.plot(kind='bar', x='Rating', y='Count', legend=False)\n",
+        "\n",
+        "ax.set_title(\"Number of Movies by Rating\")\n",
+        "ax.set_ylabel(\"Number of Movies\")\n",
+        "ax.set_xlabel(\"Rating\")"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "7EA2lAfbYRAc"
+      },
+      "source": [
+        "# Part 5: Interpretation and Conclusions\n",
+        "\n",
+        "Now that you've seen the data, what is your conclusion? Is the watchdog group\n",
+        "correct that Netflix has more movies for adults than for children? Are there any\n",
+        "caveats you'd include in your analysis?"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "EMBvHrExYr24"
+      },
+      "source": [
+        "Write your summary here: Netflix certainly makes more movies for adults. Considering the number of rated R movies is almost double the next highest category, PG-13, and PG and G are both much smaller, there is no caveat that can change that conclusion. Unless most of those rated R movies are Happy Tree Friends, and then there would be bigger concerns.\n",
+        "\n",
+        "\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "3tOuwFOZYvVP"
+      },
+      "source": [
+        "## 🌟 Above and Beyond 🌟\n",
+        "\n",
+        "After reviewing your findings, the watchdog group would like some additional questions answered:\n",
+        "\n",
+        "1. How are things affected if you include the \"made for TV movies\" that have been assigned [TV ratings](https://en.wikipedia.org/wiki/Television_content_rating_system#United_States) in your analysis, but still exclude unrated movies?\n",
+        "TV-MA still dwarfs the others at a 44% share, but TV-14 takes a higher share than PG-13 could, at 34%, and there are many categories for little kids that practically take up the remaining 22%. Still, TV-14 is decidedly worse than PG-13, and I wouldn't let my kids watch it.\n",
+        "\n",
+        "2. They would also like to see a separate report that includes only TV shows.\n",
+        "\n",
+        "3. For an upcoming community meeting, the group would like to present a simple\n",
+        "chart showing \"For Kids\" and \"For Adults\" categories. The easiest way to accomplish this would be to [create a new column in your data frame that maps](https://pandas.pydata.org/docs/getting_started/intro_tutorials/10_text_data.html) each rating to the appropriate \"For Kids\" or \"For Adults\" label, then create a new visualization based on that column."
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "name": "Exploration-01.ipynb",
+      "provenance": [],
+      "toc_visible": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
